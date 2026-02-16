@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     # Storage
     upload_dir: Path = Path("./uploads")
-    data_dir: Path = Path("/home/wake/cloud-loader/data")
+    data_dir: Path = Path(__file__).resolve().parent.parent.parent / "data"
 
     # Cloud Mover settings
     max_file_size_mb: int = 59

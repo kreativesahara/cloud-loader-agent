@@ -6,8 +6,11 @@ from typing import Optional
 
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
-MIDNIGHT_DB = Path("/home/wake/midnight/data/midnight.db")
-MIDNIGHT_MEMORY = Path("/home/wake/MIDNIGHT-MEMORY.md")
+# Dynamic path for cross-platform compatibility
+# https://deepwiki.com/search/dscuss-the-location-and-integr_d82baff8-3fc8-40e4-9c0b-89f87658dbe8?mode=fast
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+MIDNIGHT_DB = PROJECT_ROOT / "data" / "midnight.db"
+MIDNIGHT_MEMORY = PROJECT_ROOT / "MIDNIGHT-MEMORY.md"
 
 midnight_engine = create_engine(
     f"sqlite:///{MIDNIGHT_DB}",

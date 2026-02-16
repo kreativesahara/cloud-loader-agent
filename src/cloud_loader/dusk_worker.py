@@ -28,7 +28,9 @@ from claude_agent_sdk.types import McpStdioServerConfig
 
 dusk_scheduler: AsyncIOScheduler | None = None
 
-DUSK_MEMORY_PATH = Path("/home/wake/DUSK-MEMORY.md")
+# Dynamic path for cross-platform compatibility
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+DUSK_MEMORY_PATH = PROJECT_ROOT / "DUSK-MEMORY.md"
 
 
 # ---------------------------------------------------------------------------
@@ -209,16 +211,25 @@ async def run_dusk_pipeline():
         run_id = run.id
 
     try:
+        # Try to locate MCP directories (assuming siblings or internal)
+        dusk_mcp_dir = PROJECT_ROOT.parent / "dusk-mcp"
+        if not dusk_mcp_dir.exists():
+             dusk_mcp_dir = PROJECT_ROOT / "dusk-mcp"
+
+        codex_mcp_dir = PROJECT_ROOT.parent / "codex-mcp"
+        if not codex_mcp_dir.exists():
+             codex_mcp_dir = PROJECT_ROOT / "codex-mcp"
+
         options = ClaudeAgentOptions(
             model="claude-opus-4-6",
             permission_mode="bypassPermissions",
             system_prompt=DUSK_SYSTEM_PROMPT,
-            cwd="/home/wake/cloud-loader",
+            cwd=str(PROJECT_ROOT),
             max_turns=60,
             mcp_servers={
                 "dusk-tools": McpStdioServerConfig(
-                    command="/home/wake/.local/bin/uv",
-                    args=["run", "--directory", "/home/wake/dusk-mcp", "dusk-mcp"],
+                    command="uv",
+                    args=["run", "--directory", str(dusk_mcp_dir), "dusk-mcp"],
                     env={
                         "DATA_DIR": str(settings.data_dir),
                         "TAVILY_API_KEY": os.environ.get("TAVILY_API_KEY", ""),
@@ -230,8 +241,8 @@ async def run_dusk_pipeline():
                     },
                 ),
                 "codex": McpStdioServerConfig(
-                    command="/home/wake/.local/bin/uv",
-                    args=["run", "--directory", "/home/wake/codex-mcp", "codex-mcp"],
+                    command="uv",
+                    args=["run", "--directory", str(codex_mcp_dir), "codex-mcp"],
                 ),
             },
         )
