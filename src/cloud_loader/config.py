@@ -1,6 +1,7 @@
 """Application configuration."""
 
 from pathlib import Path
+import platform
 from pydantic_settings import BaseSettings
 
 
@@ -15,6 +16,14 @@ class Settings(BaseSettings):
     # Storage
     upload_dir: Path = Path("./uploads")
     data_dir: Path = Path(__file__).resolve().parent.parent.parent / "data"
+
+    # Dusk memory file path (prefer project-root on Windows)
+    _project_root: Path = Path(__file__).resolve().parent.parent.parent
+    dusk_memory_path: Path = (
+        (_project_root / "DUSK-MEMORY.md")
+        if platform.system() == "Windows"
+        else Path("/home/wake/DUSK-MEMORY.md")
+    )
 
     # Cloud Mover settings
     max_file_size_mb: int = 59

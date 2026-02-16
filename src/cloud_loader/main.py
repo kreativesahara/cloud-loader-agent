@@ -11,6 +11,7 @@ import uvicorn
 from fastapi import Depends, FastAPI, Form, Request
 from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+# This import connects to the Midnight Reader's database, but we only read data - no writes
 from sqlmodel import Session, select
 
 from cloud_loader.config import settings
@@ -944,7 +945,7 @@ def hub_answer_question(
 # Dusk Agent routes
 # ---------------------------------------------------------------------------
 
-DUSK_MEMORY_PATH = Path("/home/wake/DUSK-MEMORY.md")
+DUSK_MEMORY_PATH = settings.dusk_memory_path
 GMT8 = timezone(timedelta(hours=8))
 
 
