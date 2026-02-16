@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     base_url: str = "http://localhost:8080"
 
     # Storage
-    upload_dir: Path = Path("./uploads")
-    data_dir: Path = Path("/home/wake/cloud-loader/data")
+    upload_dir: Path = Path("uploads")
+    data_dir: Path = Path("data")
 
     # Cloud Mover settings
     max_file_size_mb: int = 59
@@ -24,6 +24,10 @@ class Settings(BaseSettings):
 
     # Tavily (used by Dusk agent web search)
     tavily_api_key: str = ""
+
+    # # LLM API keys
+    openai_api_key: str = ""
+    anthropic_api_key: str = ""
 
     # X (Twitter) API keys
     x_api_key: str = ""

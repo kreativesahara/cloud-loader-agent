@@ -28,7 +28,7 @@ from claude_agent_sdk.types import McpStdioServerConfig
 
 dusk_scheduler: AsyncIOScheduler | None = None
 
-DUSK_MEMORY_PATH = Path("/home/wake/DUSK-MEMORY.md")
+DUSK_MEMORY_PATH = settings.data_dir / "DUSK-MEMORY.md"
 
 
 # ---------------------------------------------------------------------------
@@ -147,19 +147,19 @@ def _build_dusk_prompt() -> str:
             answered.append(f"Q: {e.question}\nA: {e.answer}")
 
     prompt_parts = [
-        f"你剛從休眠中醒來。現在是 {today_str} {time_str} (GMT+8)。請立即開始工作。\n"
+        f"你剛從休眠中醒來。現在是 {today_str} {time_str} (GMT+8)。請立即開始工作。\\n"
     ]
 
     if memory_content:
-        prompt_parts.append(f"## 你上次休眠前的記憶\n```\n{memory_content}\n```\n")
+        prompt_parts.append(f"## 你上次休眠前的記憶\\n```\\n{memory_content}\\n```\\n")
     else:
         prompt_parts.append(
-            "## 記憶狀態\n這是你第一次醒來，還沒有記憶。請建立你的第一份記憶。\n"
+            "## 記憶狀態\\n這是你第一次醒來，還沒有記憶。請建立你的第一份記憶。\\n"
         )
 
     if answered:
         prompt_parts.append(
-            "## Wake 最近的回覆\n" + "\n---\n".join(answered) + "\n"
+            "## Wake 最近的回覆\\n" + "\\n---\\n".join(answered) + "\\n"
         )
 
     prompt_parts.append(
@@ -168,7 +168,7 @@ def _build_dusk_prompt() -> str:
         "`dusk_post_brainstorm` 發表報告 + `dusk_ask_wake` 提問。"
     )
 
-    return "\n".join(prompt_parts)
+    return "\\n".join(prompt_parts)
 
 
 # ---------------------------------------------------------------------------
@@ -209,31 +209,52 @@ async def run_dusk_pipeline():
         run_id = run.id
 
     try:
+        # Resolve path to 'uv' for MCP servers
+        import shutil
+        uv_path = shutil.which("uv")
+        if not uv_path:
+            # Fallback for Windows if not in PATH
+            uv_path = "uv" 
+
+        # Default MCP paths (inside project root for portability, or use env vars)
+        project_root = Path.cwd()
+        dusk_mcp_dir = Path(os.environ.get("DUSK_MCP_DIR", project_root / "dusk-mcp"))
+        codex_mcp_dir = Path(os.environ.get("CODEX_MCP_DIR", project_root / "codex-mcp"))
+
+        mcp_servers = {}
+
+        if dusk_mcp_dir.exists():
+            mcp_servers["dusk-tools"] = McpStdioServerConfig(
+                command=uv_path,
+                args=["run", "--directory", str(dusk_mcp_dir), "dusk-mcp"],
+                env={
+                    "DATA_DIR": str(settings.data_dir),
+                    "TAVILY_API_KEY": os.environ.get("TAVILY_API_KEY", ""),
+                    "X_API_KEY": os.environ.get("X_API_KEY", ""),
+                    "X_API_SECRET": os.environ.get("X_API_SECRET", ""),
+                    "X_ACCESS_TOKEN": os.environ.get("X_ACCESS_TOKEN", ""),
+                    "X_ACCESS_TOKEN_SECRET": os.environ.get("X_ACCESS_TOKEN_SECRET", ""),
+                    "X_BEARER_TOKEN": os.environ.get("X_BEARER_TOKEN", ""),
+                },
+            )
+        else:
+            print(f"[Dusk] Warning: dusk-mcp not found at {dusk_mcp_dir}, skipping tool")
+
+        if codex_mcp_dir.exists():
+            mcp_servers["codex"] = McpStdioServerConfig(
+                command=uv_path,
+                args=["run", "--directory", str(codex_mcp_dir), "codex-mcp"],
+            )
+        else:
+            print(f"[Dusk] Warning: codex-mcp not found at {codex_mcp_dir}, skipping tool")
+
         options = ClaudeAgentOptions(
             model="claude-opus-4-6",
             permission_mode="bypassPermissions",
             system_prompt=DUSK_SYSTEM_PROMPT,
-            cwd="/home/wake/cloud-loader",
+            cwd=str(project_root),
             max_turns=60,
-            mcp_servers={
-                "dusk-tools": McpStdioServerConfig(
-                    command="/home/wake/.local/bin/uv",
-                    args=["run", "--directory", "/home/wake/dusk-mcp", "dusk-mcp"],
-                    env={
-                        "DATA_DIR": str(settings.data_dir),
-                        "TAVILY_API_KEY": os.environ.get("TAVILY_API_KEY", ""),
-                        "X_API_KEY": os.environ.get("X_API_KEY", ""),
-                        "X_API_SECRET": os.environ.get("X_API_SECRET", ""),
-                        "X_ACCESS_TOKEN": os.environ.get("X_ACCESS_TOKEN", ""),
-                        "X_ACCESS_TOKEN_SECRET": os.environ.get("X_ACCESS_TOKEN_SECRET", ""),
-                        "X_BEARER_TOKEN": os.environ.get("X_BEARER_TOKEN", ""),
-                    },
-                ),
-                "codex": McpStdioServerConfig(
-                    command="/home/wake/.local/bin/uv",
-                    args=["run", "--directory", "/home/wake/codex-mcp", "codex-mcp"],
-                ),
-            },
+            mcp_servers=mcp_servers,
         )
 
         output_parts: list[str] = []
