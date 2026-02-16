@@ -9,8 +9,8 @@ class Settings(BaseSettings):
 
     # Server
     host: str = "0.0.0.0"
-    port: int = 8080
-    base_url: str = "http://localhost:8080"
+    port: int = 8081
+    base_url: str = "http://localhost:8081"
 
     # Storage
     upload_dir: Path = Path("./uploads")
