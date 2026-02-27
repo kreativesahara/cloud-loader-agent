@@ -24,6 +24,8 @@ class Settings(BaseSettings):
 
     # Tavily (used by Dusk agent web search)
     tavily_api_key: str = ""
+    anthropic_api_key: str = "" 
+    openai_api_key: str = ""
 
     # X (Twitter) API keys
     x_api_key: str = ""
