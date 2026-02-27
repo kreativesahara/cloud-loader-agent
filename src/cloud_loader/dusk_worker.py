@@ -213,12 +213,12 @@ async def run_dusk_pipeline():
             model="claude-opus-4-6",
             permission_mode="bypassPermissions",
             system_prompt=DUSK_SYSTEM_PROMPT,
-            cwd="/home/wake/cloud-loader",
+            cwd=str(Path.cwd()),
             max_turns=60,
             mcp_servers={
                 "dusk-tools": McpStdioServerConfig(
-                    command="/home/wake/.local/bin/uv",
-                    args=["run", "--directory", "/home/wake/dusk-mcp", "dusk-mcp"],
+                    command="uv",
+                    args=["run", "--directory", "../dusk-mcp", "dusk-mcp"],
                     env={
                         "DATA_DIR": str(settings.data_dir),
                         "TAVILY_API_KEY": os.environ.get("TAVILY_API_KEY", ""),
@@ -230,8 +230,8 @@ async def run_dusk_pipeline():
                     },
                 ),
                 "codex": McpStdioServerConfig(
-                    command="/home/wake/.local/bin/uv",
-                    args=["run", "--directory", "/home/wake/codex-mcp", "codex-mcp"],
+                    command="uv",
+                    args=["run", "--directory", "../codex-mcp", "codex-mcp"],
                 ),
             },
         )

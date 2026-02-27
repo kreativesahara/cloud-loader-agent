@@ -13,6 +13,8 @@ venv/
 uploads/
 data/
 *.db
+dusk-mcp/
+codex-mcp/
 
 # IDE
 .idea/
