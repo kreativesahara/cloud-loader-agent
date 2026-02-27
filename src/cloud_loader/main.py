@@ -634,6 +634,8 @@ templates = Jinja2Templates(directory=str(templates_dir))
 
 app.include_router(api.router)
 app.include_router(auth.router)
+from cloud_loader.routers import concepts
+app.include_router(concepts.router)
 
 
 def _is_ai_agent(request: Request) -> bool:

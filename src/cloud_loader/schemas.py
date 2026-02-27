@@ -90,3 +90,36 @@ class MdStorageListResponse(BaseModel):
 TemplateCreateRequest = MdStorageCreateRequest
 TemplateCreateResponse = MdStorageCreateResponse
 TemplateGetResponse = MdStorageGetResponse
+
+
+# Concept Tracking schemas
+
+class ConceptCreateRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    description: str = Field(default="", max_length=500)
+    keywords: list[str] = Field(default_factory=list)
+    search_interval_hours: int = Field(default=24)
+
+class ConceptUpdateRequest(BaseModel):
+    name: Optional[str] = Field(default=None, min_length=1, max_length=100)
+    description: Optional[str] = Field(default=None, max_length=500)
+    keywords: Optional[list[str]] = Field(default=None)
+    search_interval_hours: Optional[int] = Field(default=None)
+
+class ConceptResponse(BaseModel):
+    id: int
+    name: str
+    description: str
+    keywords: list[str]
+    search_interval_hours: int
+    created_at: datetime
+    updated_at: datetime
+
+class ConceptSnapshotResponse(BaseModel):
+    id: int
+    concept_id: int
+    knowledge_graph: dict
+    summary: str
+    source_urls: list[str]
+    content_drafts: dict
+    created_at: datetime
