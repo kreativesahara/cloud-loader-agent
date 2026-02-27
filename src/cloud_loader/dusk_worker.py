@@ -28,7 +28,7 @@ from claude_agent_sdk.types import McpStdioServerConfig
 
 dusk_scheduler: AsyncIOScheduler | None = None
 
-DUSK_MEMORY_PATH = Path("/home/wake/DUSK-MEMORY.md")
+DUSK_MEMORY_PATH = Path("./DUSK-MEMORY.md")
 
 
 # ---------------------------------------------------------------------------

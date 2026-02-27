@@ -8,13 +8,13 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # Server
-    host: str = "0.0.0.0"
-    port: int = 8080
-    base_url: str = "http://localhost:8080"
+    host: str = "127.0.0.1"
+    port: int = 8081
+    base_url: str = "http://localhost:8081"
 
     # Storage
     upload_dir: Path = Path("./uploads")
-    data_dir: Path = Path("/home/wake/cloud-loader/data")
+    data_dir: Path = Path("./data")
 
     # Cloud Mover settings
     max_file_size_mb: int = 59
