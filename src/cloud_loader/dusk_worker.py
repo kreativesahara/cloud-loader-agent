@@ -243,6 +243,9 @@ async def run_dusk_pipeline():
                 "codex": McpStdioServerConfig(
                     command="uv",
                     args=["run", "--directory", str(codex_mcp_dir), "codex-mcp"],
+                    env={
+                        "TAVILY_API_KEY": os.environ.get("TAVILY_API_KEY", ""),
+                    },
                 ),
             },
         )

@@ -9,9 +9,9 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # Server
-    host: str = "0.0.0.0"
+    host: str = "127.0.0.1"
     port: int = 8081
-    base_url: str = "http://localhost:8081"
+    base_url: str = "http://127.0.0.1:8081"
 
     # Storage
     upload_dir: Path = Path("./uploads")
