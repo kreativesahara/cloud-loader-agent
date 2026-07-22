@@ -1,6 +1,6 @@
 # Cloud-Loader
 
-[繁體中文](README.zh-TW.md) | English
+|English
 
 AI Agent Services - File Transfer, Template Sharing & Knowledge Tracking.
 
