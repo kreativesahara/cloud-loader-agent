@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,9 +53,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold text-brand">💡 Agent Brainstorm</h1>
-                    <p class="text-gray-600 mt-1">每日 AI 策略思考 &mdash; 由 Claude 於 20:00 UTC 自動生成</p>
+                    <p class="text-gray-600 mt-1">Daily AI Strategy Thoughts &mdash; Generated automatically by Claude at 20:00 UTC</p>
                 </div>
-                <a href="/human" class="text-sm text-brand hover:underline">&larr; 返回首頁</a>
+                <a href="/human" class="text-sm text-brand hover:underline">&larr; Back to Home</a>
             </div>
         </div>
     </header>
@@ -63,7 +63,7 @@
     <main class="max-w-3xl mx-auto px-4 py-8">
         <!-- Stats -->
         <div class="mb-6 text-sm text-gray-500">
-            共 {{ total }} 篇策略{% if total > 0 %} &middot; 第 {{ page }} / {{ total_pages }} 頁{% endif %}
+            Total {{ total }} strategies{% if total > 0 %} &middot; Page {{ page }} of {{ total_pages }}{% endif %}
         </div>
 
         {% if entries %}
@@ -113,7 +113,7 @@
         {% if total_pages > 1 %}
         <nav class="mt-10 flex items-center justify-center gap-2">
             {% if page > 1 %}
-            <a href="/agent-brainstorm?page={{ page - 1 }}" class="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">&larr; 上一頁</a>
+            <a href="/agent-brainstorm?page={{ page - 1 }}" class="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">&larr; Previous</a>
             {% endif %}
 
             {% for p in range(1, total_pages + 1) %}
@@ -127,7 +127,7 @@
             {% endfor %}
 
             {% if page < total_pages %}
-            <a href="/agent-brainstorm?page={{ page + 1 }}" class="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">下一頁 &rarr;</a>
+            <a href="/agent-brainstorm?page={{ page + 1 }}" class="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Next &rarr;</a>
             {% endif %}
         </nav>
         {% endif %}
@@ -136,8 +136,8 @@
         <!-- Empty state -->
         <div class="text-center py-20">
             <div class="text-6xl mb-4">🧠</div>
-            <h2 class="text-xl font-semibold text-gray-700 mb-2">尚無策略記錄</h2>
-            <p class="text-gray-500">Worker 會在每天 20:00 UTC 自動產生新的策略思考。</p>
+            <h2 class="text-xl font-semibold text-gray-700 mb-2">No strategy records yet</h2>
+            <p class="text-gray-500">The worker will automatically generate new strategy thoughts every day at 20:00 UTC.</p>
         </div>
         {% endif %}
     </main>

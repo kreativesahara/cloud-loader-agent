@@ -74,12 +74,12 @@ def summarize_with_gpt(yesterday_content: str) -> dict:
             {
                 "role": "system",
                 "content": (
-                    "你是一個研究助理。你會收到昨天關於「服務 AI agents 的網站」的策略分析。\n"
-                    "請輸出 JSON，包含：\n"
-                    "1. summary: 用 3-5 句繁體中文摘要昨天的核心洞見和關鍵策略方向\n"
-                    "2. queries: 3 個英文搜尋字串，用來調查今天應該深入的方向。"
-                    "搜尋字串要具體、有時效性，針對昨天策略中提到但還需要更多資料的點。\n\n"
-                    "只輸出 JSON，不要其他文字。"
+                    "You are a research assistant. You will receive yesterday's strategy analysis regarding a 'Website serving AI agents'.\n"
+                    "Please output JSON, including:\n"
+                    "1. summary: 3-5 sentences in English summarizing yesterday's core insights and key strategic directions.\n"
+                    "2. queries: 3 English search queries to investigate directions that should be explored deeper today. "
+                    "The search queries should be specific, timely, and target points mentioned in yesterday's strategy that need more data.\n\n"
+                    "Output ONLY JSON, no other text."
                 ),
             },
             {
@@ -146,40 +146,40 @@ def research_with_tavily(queries: list[str]) -> str:
             print(f"[Worker] Tavily error for '{query}': {e}")
 
     if all_results:
-        return "## 今日市場調查\n\n" + "\n".join(all_results)
+        return "## Today's Market Research\n\n" + "\n".join(all_results)
     return ""
 
 
 def build_prompt(yesterday_summary: str | None, research: str) -> str:
     """Build the final prompt for Claude CLI."""
     sections = [
-        "你是一個策略顧問。你的任務是深度思考「服務 agents (Claude Code / Codex / OpenClaw) 的網站」這個概念。\n"
-        "這個網站目前叫 Cloud-Loader (loader.land)，提供 File Transfer、MD Storage、Loader Tracker 三項服務。"
+        "You are a strategy consultant. Your task is to deeply think about the concept of a 'Website serving agents (Claude Code / Codex / OpenClaw)'.\n"
+        "This website is currently called Cloud-Loader (loader.land), offering File Transfer, MD Storage, and Loader Tracker services."
     ]
 
     if research:
         sections.append(
-            "\n以下是今天的市場調查結果，請參考這些最新資訊來制定策略：\n\n"
+            "\nHere are today's market research results. Please refer to this latest information to formulate strategy:\n\n"
             f"{research}"
         )
 
     if yesterday_summary:
         sections.append(
-            "\n以下是昨天策略的摘要，請在此基礎上延伸思考，不要重複相同的點，要有新的洞見：\n\n"
+            "\nHere is a summary of yesterday's strategy. Please build upon this, do not repeat the same points, and provide new insights:\n\n"
             f"{yesterday_summary}"
         )
 
     sections.append(
         "\n---\n\n"
-        "請從以下三個面向深度分析並提出具體可執行的策略：\n\n"
-        "1. **網站服務內容**: 這個網站應該提供什麼服務給 AI agents？什麼功能是 agents 迫切需要的？"
-        "現有服務有哪些可以強化？還缺什麼關鍵功能？\n"
-        "2. **為什麼 agents 需要這個網站**: agents 在日常工作中遇到什麼痛點？"
-        "這個網站如何解決？與其他服務相比有什麼獨特價值？\n"
-        "3. **推廣策略**: 如何讓更多 agent 使用者知道這個網站？"
-        "如何建立 agent 生態系？具體的推廣渠道和方法？\n\n"
-        "請用繁體中文回答。你的回答開頭第一行必須是一個 # 標題（一句話概括今天的核心洞見），"
-        "第二行是 2-3 句話的摘要。然後才是詳細分析。每個面向都要有具體、可執行的建議，不要空泛。"
+        "Please deeply analyze from the following three perspectives and propose concrete actionable strategies:\n\n"
+        "1. **Website Service Content**: What services should this website provide to AI agents? What features are urgently needed by agents? "
+        "Which existing services can be enhanced? What key features are missing?\n"
+        "2. **Why agents need this website**: What pain points do agents encounter in their daily work? "
+        "How does this website solve them? What unique value does it have compared to other services?\n"
+        "3. **Promotion Strategy**: How to let more agent users know about this website? "
+        "How to build an agent ecosystem? Specific promotional channels and methods?\n\n"
+        "Please answer in English. The first line of your answer must be a # Title (a one-sentence summary of today's core insights), "
+        "the second line should be a 2-3 sentence summary. Then follows the detailed analysis. Each perspective must have concrete, actionable suggestions, do not be vague."
     )
 
     return "\n".join(sections)
@@ -230,7 +230,7 @@ def parse_output(output: str) -> dict:
     lines = output.strip().split("\n")
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    title = f"Agent 服務網站策略 - {today}"
+    title = f"Agent Service Website Strategy - {today}"
     content_start = 0
 
     for i, line in enumerate(lines[:10]):
@@ -264,7 +264,7 @@ def save_entry(data: dict) -> int:
         title=data["title"][:200],
         summary=data["summary"][:1000],
         content=data["content"],
-        concept="服務agents的網站",
+        concept="Website serving agents",
     )
 
     with Session(engine) as session:

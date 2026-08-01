@@ -99,7 +99,7 @@ class BrainstormEntry(SQLModel, table=True):
     title: str = Field(max_length=200)
     summary: str = Field(max_length=1000)
     content: str  # Full brainstorm content (markdown)
-    concept: str = Field(default="服務agents的網站", max_length=200)
+    concept: str = Field(default="Website serving agents", max_length=200)
     created_at: datetime = Field(default_factory=_utc_now)
 
 

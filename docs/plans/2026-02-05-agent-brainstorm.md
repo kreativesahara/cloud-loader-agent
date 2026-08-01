@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Create a daily brainstorm worker that uses Claude CLI + ralph-loop to think about "服務agents的網站" concept, then stores strategies in a timeline page at `/agent-brainstorm`.
+**Goal:** Create a daily brainstorm worker that uses Claude CLI + ralph-loop to think about "Website serving agents" concept, then stores strategies in a timeline page at `/agent-brainstorm`.
 
 **Architecture:** New `BrainstormEntry` SQLModel table stores daily brainstorm outputs. A Jinja2 timeline page at `/agent-brainstorm` displays entries with pagination. A standalone worker script runs via systemd timer at 20:00 UTC daily, invoking `claude --dangerously-skip-permissions` with ralph-loop to generate strategy content.
 

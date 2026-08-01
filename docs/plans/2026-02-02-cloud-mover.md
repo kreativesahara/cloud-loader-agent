@@ -2,15 +2,15 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 建立一個 Claude Code 搬家助手 API 服務，讓用戶可以在不同電腦間遷移 Claude Code 設定。
+**Goal:**  Claude Code  API ， Claude Code 。
 
-**Architecture:** FastAPI 後端 + SQLite 資料庫 + 本地檔案儲存。用戶透過 Claude Code 呼叫 API 上傳/下載設定壓縮檔，使用系統產生的 6 碼識別碼 + 4 位數字 OTP 驗證，24 小時後自動過期清理。
+**Architecture:** FastAPI  + SQLite  + 。 Claude Code  API /， 6  + 4  OTP ，24 。
 
 **Tech Stack:** Python 3.12, FastAPI, SQLModel, SQLite, uv
 
 ---
 
-## Task 1: 專案初始化
+## Task 1: 
 
 **Files:**
 - Create: `pyproject.toml`
@@ -19,7 +19,7 @@
 - Create: `.gitignore`
 - Create: `CLAUDE.md`
 
-**Step 1: 建立 pyproject.toml**
+**Step 1:  pyproject.toml**
 
 ```toml
 [project]
@@ -51,7 +51,7 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 ```
 
-**Step 2: 建立 src/cloud_mover/__init__.py**
+**Step 2:  src/cloud_mover/__init__.py**
 
 ```python
 """Cloud-Mover: Claude Code Migration Helper API."""
@@ -59,7 +59,7 @@ pythonpath = ["src"]
 __version__ = "0.1.0"
 ```
 
-**Step 3: 建立 .env.example**
+**Step 3:  .env.example**
 
 ```env
 # Cloud-Mover Configuration
@@ -71,7 +71,7 @@ MAX_FILE_SIZE_MB=59
 OTP_EXPIRY_HOURS=24
 ```
 
-**Step 4: 建立 .gitignore**
+**Step 4:  .gitignore**
 
 ```gitignore
 # Python
@@ -100,36 +100,36 @@ data/
 uv.lock
 ```
 
-**Step 5: 建立 CLAUDE.md**
+**Step 5:  CLAUDE.md**
 
 ```markdown
 # Cloud-Mover
 
-Claude Code 搬家助手 API 服務。
+Claude Code  API 。
 
-## 快速指令
+## 
 
 cd /home/cloud-mover
-uv run cloud-mover          # 啟動服務
-uv run pytest               # 執行測試
+uv run cloud-mover          # 
+uv run pytest               # Run tests
 
-## API 端點
+## API 
 
-| 端點 | 方法 | 說明 |
+|  |  |  |
 |------|------|------|
-| `/` | GET | API 文件（給 Claude Code 閱讀） |
-| `/register` | POST | 註冊取得識別碼 |
-| `/upload` | POST | 上傳備份檔案 |
-| `/download` | POST | 下載備份檔案 |
+| `/` | GET | API （ Claude Code ） |
+| `/register` | POST |  |
+| `/upload` | POST |  |
+| `/download` | POST |  |
 
-## 技術棧
+## Tech Stack
 
 - FastAPI + SQLModel + SQLite
-- 本地檔案儲存（./uploads/）
-- 24 小時自動過期清理
+- （./uploads/）
+- 24 
 ```
 
-**Step 6: 建立目錄結構**
+**Step 6: **
 
 ```bash
 mkdir -p src/cloud_mover/services src/cloud_mover/routers uploads data tests
@@ -137,10 +137,10 @@ touch src/cloud_mover/services/__init__.py src/cloud_mover/routers/__init__.py
 touch uploads/.gitkeep data/.gitkeep
 ```
 
-**Step 7: 初始化 uv 並安裝依賴**
+**Step 7:  uv install dependencies**
 
 Run: `cd /home/cloud-mover && uv sync`
-Expected: 依賴安裝成功
+Expected: 
 
 **Step 8: Commit**
 
@@ -152,14 +152,14 @@ git commit -m "feat: initialize cloud-mover project structure"
 
 ---
 
-## Task 2: 設定管理與資料庫模型
+## Task 2: 
 
 **Files:**
 - Create: `src/cloud_mover/config.py`
 - Create: `src/cloud_mover/models.py`
 - Create: `src/cloud_mover/database.py`
 
-**Step 1: 建立 config.py**
+**Step 1:  config.py**
 
 ```python
 """Application configuration."""
@@ -194,7 +194,7 @@ class Settings(BaseSettings):
 settings = Settings()
 ```
 
-**Step 2: 建立 models.py**
+**Step 2:  models.py**
 
 ```python
 """Database models using SQLModel."""
@@ -245,7 +245,7 @@ class ActionLog(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 ```
 
-**Step 3: 建立 database.py**
+**Step 3:  database.py**
 
 ```python
 """Database initialization and session management."""
@@ -284,13 +284,13 @@ git commit -m "feat: add config, database models, and session management"
 
 ---
 
-## Task 3: 認證服務（識別碼產生與驗證）
+## Task 3: （）
 
 **Files:**
 - Create: `src/cloud_mover/services/auth.py`
 - Create: `tests/test_auth.py`
 
-**Step 1: 建立 tests/test_auth.py**
+**Step 1:  tests/test_auth.py**
 
 ```python
 """Tests for auth service."""
@@ -349,12 +349,12 @@ def test_is_valid_code_invalid_chars():
     assert is_valid_code("abc-12") is False  # special char
 ```
 
-**Step 2: 執行測試確認失敗**
+**Step 2: Run tests**
 
 Run: `cd /home/cloud-mover && uv run pytest tests/test_auth.py -v`
 Expected: FAIL (module not found)
 
-**Step 3: 建立 services/auth.py**
+**Step 3:  services/auth.py**
 
 ```python
 """Authentication service for code and OTP generation."""
@@ -381,7 +381,7 @@ def is_valid_code(code: str) -> bool:
     return code.isalnum() and code.islower()
 ```
 
-**Step 4: 執行測試確認通過**
+**Step 4: Run tests**
 
 Run: `cd /home/cloud-mover && uv run pytest tests/test_auth.py -v`
 Expected: All tests PASS
@@ -395,13 +395,13 @@ git commit -m "feat: add auth service with code and OTP generation"
 
 ---
 
-## Task 4: 備份服務（上傳/下載邏輯）
+## Task 4: （/）
 
 **Files:**
 - Create: `src/cloud_mover/services/backup.py`
 - Create: `src/cloud_mover/schemas.py`
 
-**Step 1: 建立 schemas.py**
+**Step 1:  schemas.py**
 
 ```python
 """Pydantic schemas for API request/response."""
@@ -416,7 +416,7 @@ class RegisterResponse(BaseModel):
     """Response for register endpoint."""
 
     code: str
-    message: str = "註冊成功，請記住您的識別碼"
+    message: str = "，"
 
 
 class UploadResponse(BaseModel):
@@ -424,7 +424,7 @@ class UploadResponse(BaseModel):
 
     otp: str
     expires_at: datetime
-    message: str = "上傳成功"
+    message: str = ""
 
 
 class DownloadRequest(BaseModel):
@@ -448,7 +448,7 @@ class StatusResponse(BaseModel):
     file_size: Optional[int] = None
 ```
 
-**Step 2: 建立 services/backup.py**
+**Step 2:  services/backup.py**
 
 ```python
 """Backup service for file operations."""
@@ -599,12 +599,12 @@ git commit -m "feat: add backup service and API schemas"
 
 ---
 
-## Task 5: 清理服務
+## Task 5: 
 
 **Files:**
 - Create: `src/cloud_mover/services/cleanup.py`
 
-**Step 1: 建立 services/cleanup.py**
+**Step 1:  services/cleanup.py**
 
 ```python
 """Cleanup service for expired backups."""
@@ -661,12 +661,12 @@ git commit -m "feat: add cleanup service for expired backups"
 
 ---
 
-## Task 6: API 路由
+## Task 6: API 
 
 **Files:**
 - Create: `src/cloud_mover/routers/api.py`
 
-**Step 1: 建立 routers/api.py**
+**Step 1:  routers/api.py**
 
 ```python
 """API routes for Cloud-Mover."""
@@ -736,19 +736,19 @@ async def upload(
 
     # Validate code format
     if not is_valid_code(code):
-        raise HTTPException(status_code=400, detail="識別碼格式錯誤")
+        raise HTTPException(status_code=400, detail="")
 
     # Check user exists
     user = get_user_by_code(session, code)
     if not user:
-        raise HTTPException(status_code=404, detail="識別碼不存在，請先註冊")
+        raise HTTPException(status_code=404, detail="，")
 
     # Check file size
     contents = await file.read()
     if len(contents) > settings.max_file_size_bytes:
         raise HTTPException(
             status_code=400,
-            detail=f"檔案大小超過限制 ({settings.max_file_size_mb}MB)",
+            detail=f"File size exceeds limit ({settings.max_file_size_mb}MB)",
         )
 
     # Save file
@@ -779,16 +779,16 @@ def download(
 
     # Validate code format
     if not is_valid_code(body.code):
-        raise HTTPException(status_code=400, detail="識別碼格式錯誤")
+        raise HTTPException(status_code=400, detail="")
 
     # Get backup
     backup = get_backup_for_download(session, body.code, body.otp)
     if not backup:
-        raise HTTPException(status_code=404, detail="OTP 錯誤或已過期")
+        raise HTTPException(status_code=404, detail="OTP ")
 
     # Check file exists
     if not os.path.exists(backup.file_path):
-        raise HTTPException(status_code=404, detail="備份檔案不存在")
+        raise HTTPException(status_code=404, detail="Backup file does not exist")
 
     # Log download
     log_download(session, backup, ip)
@@ -811,7 +811,7 @@ def status(
 ):
     """Check backup status for a user."""
     if not is_valid_code(code):
-        raise HTTPException(status_code=400, detail="識別碼格式錯誤")
+        raise HTTPException(status_code=400, detail="")
 
     backup = get_backup_status(session, code)
     if not backup:
@@ -833,29 +833,29 @@ git commit -m "feat: add API routes for register, upload, download, status"
 
 ---
 
-## Task 7: 主程式入口與 API 文件
+## Task 7:  API 
 
 **Files:**
 - Create: `src/cloud_mover/main.py`
 
-**Step 1: 建立 main.py（包含 API 文件）**
+**Step 1:  main.py（ API ）**
 
-主程式包含：
-- FastAPI 應用程式
-- API 文件（給 Claude Code 閱讀）
-- 定時清理任務
-- Uvicorn 啟動入口
+：
+- FastAPI 
+- API （ Claude Code ）
+- 
+- Uvicorn 
 
-API 文件內容需明確指示 Claude Code：
-1. 先詢問用戶是否有識別碼
-2. 沒有則呼叫 /register 取得
-3. 打包 ~/.claude/ 等設定檔
-4. 上傳並告知用戶 OTP
+API  Claude Code：
+1. 
+2.  /register 
+3.  ~/.claude/ 
+4.  OTP
 
-**Step 2: 執行測試確認服務可啟動**
+**Step 2: Run tests**
 
 Run: `cd /home/cloud-mover && timeout 5 uv run cloud-mover || true`
-Expected: 服務啟動，5 秒後 timeout 終止
+Expected: ，5  timeout 
 
 **Step 3: Commit**
 
@@ -866,13 +866,13 @@ git commit -m "feat: add main entry point with API documentation and cleanup tas
 
 ---
 
-## Task 8: API 整合測試
+## Task 8: API 
 
 **Files:**
 - Create: `tests/test_api.py`
-- Modify: `pyproject.toml` (新增 dev dependencies)
+- Modify: `pyproject.toml` (Added dev dependencies)
 
-**Step 1: 新增 pytest 依賴到 pyproject.toml**
+**Step 1: Added pytest  pyproject.toml**
 
 ```toml
 [project.optional-dependencies]
@@ -882,9 +882,9 @@ dev = [
 ]
 ```
 
-**Step 2: 建立 tests/test_api.py**
+**Step 2:  tests/test_api.py**
 
-測試案例：
+：
 - test_root_returns_documentation
 - test_register_returns_code
 - test_upload_requires_valid_code
@@ -893,7 +893,7 @@ dev = [
 - test_download_wrong_otp
 - test_status_no_backup
 
-**Step 3: 執行測試**
+**Step 3: Run tests**
 
 Run: `cd /home/cloud-mover && uv sync && uv run pytest tests/ -v`
 Expected: All tests PASS
@@ -907,12 +907,12 @@ git commit -m "test: add integration tests for API endpoints"
 
 ---
 
-## Task 9: 建立 .env 並測試服務
+## Task 9:  .env 
 
 **Files:**
 - Create: `.env`
 
-**Step 1: 建立 .env**
+**Step 1:  .env**
 
 ```env
 HOST=0.0.0.0
@@ -923,19 +923,19 @@ MAX_FILE_SIZE_MB=59
 OTP_EXPIRY_HOURS=24
 ```
 
-**Step 2: 啟動服務測試**
+**Step 2: **
 
 Run: `cd /home/cloud-mover && uv run cloud-mover &`
 Wait 3 seconds, then:
 Run: `curl http://localhost:8080/`
-Expected: 回傳 API 文件
+Expected:  API 
 
-**Step 3: 測試註冊**
+**Step 3: **
 
 Run: `curl -X POST http://localhost:8080/register`
-Expected: `{"code":"xxxxxx","message":"註冊成功，請記住您的識別碼"}`
+Expected: `{"code":"xxxxxx","message":"，"}`
 
-**Step 4: 停止服務**
+**Step 4: **
 
 Run: `pkill -f "cloud-mover"`
 
@@ -948,12 +948,12 @@ git commit -m "chore: add .env configuration"
 
 ---
 
-## Task 10: Systemd 服務設定（可選）
+## Task 10: Systemd （）
 
 **Files:**
-- Create: `/etc/systemd/system/cloud-mover.service`（需 sudo）
+- Create: `/etc/systemd/system/cloud-mover.service`（ sudo）
 
-**Step 1: 建立 systemd service 檔案**
+**Step 1:  systemd service **
 
 ```ini
 [Unit]
@@ -973,7 +973,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-**Step 2: 啟用服務**
+**Step 2: **
 
 ```bash
 sudo systemctl daemon-reload
@@ -982,18 +982,18 @@ sudo systemctl start cloud-mover
 sudo systemctl status cloud-mover
 ```
 
-**Step 3: 更新 /home/CLAUDE.md**
+**Step 3: Update /home/CLAUDE.md**
 
-將 cloud-mover 服務加入全域 CLAUDE.md。
+ cloud-mover add CLAUDE.md。
 
 ---
 
-## 完成
+## 
 
-計畫完成後，服務將提供：
-- `GET /` - API 文件（Claude Code 閱讀用）
-- `POST /register` - 註冊取得識別碼
-- `POST /upload` - 上傳備份
-- `POST /download` - 下載備份
-- `GET /status/{code}` - 查詢狀態
-- 自動清理過期備份（每小時）
+，：
+- `GET /` - API （Claude Code ）
+- `POST /register` - 
+- `POST /upload` - 
+- `POST /download` - 
+- `GET /status/{code}` - 
+- （）

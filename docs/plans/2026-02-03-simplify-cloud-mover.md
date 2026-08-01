@@ -2,20 +2,20 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 簡化 Cloud-Mover 為單一驗證碼流程，用戶自設壓縮密碼，安裝說明放在 zip 內。
+**Goal:** Simplify Cloud-Mover to a single verification code flow, user sets zip password, installation instructions inside zip.
 
-**Architecture:** 移除 User 表和 OTP 機制，Backup 表直接用 code 作為主要識別。上傳產生 code，下載只需 code。API 文件分上傳/下載情境教導 Claude Code 操作流程。
+**Architecture:** Remove User table and OTP mechanism, Backup table directly uses code as main identifier. Upload generates code, download only needs code. API docs split into upload/download scenarios to teach Claude Code the operation flow.
 
 **Tech Stack:** FastAPI, SQLModel, SQLite, pydantic-settings
 
 ---
 
-### Task 1: 更新 config.py 加入 BASE_URL
+### Task 1: Update config.py add BASE_URL
 
 **Files:**
 - Modify: `src/cloud_mover/config.py`
 
-**Step 1: 修改 config.py**
+**Step 1: Modify config.py**
 
 ```python
 """Application configuration."""
@@ -29,11 +29,11 @@ class Settings(BaseSettings):
 
     host: str = "0.0.0.0"
     port: int = 8080
-    base_url: str = "http://localhost:8080"  # 新增
+    base_url: str = "http://localhost:8080"  # Added
     upload_dir: Path = Path("./uploads")
     data_dir: Path = Path("./data")
     max_file_size_mb: int = 59
-    expiry_hours: int = 24  # 重命名 otp_expiry_hours
+    expiry_hours: int = 24  #  otp_expiry_hours
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
@@ -57,12 +57,12 @@ Run: `git add src/cloud_mover/config.py && git commit -m "feat: add base_url con
 
 ---
 
-### Task 2: 簡化 models.py - 移除 User 表
+### Task 2: Simplify models.py - Remove User 
 
 **Files:**
 - Modify: `src/cloud_mover/models.py`
 
-**Step 1: 重寫 models.py**
+**Step 1: Rewrite models.py**
 
 ```python
 """Database models using SQLModel."""
@@ -97,12 +97,12 @@ Run: `git add src/cloud_mover/models.py && git commit -m "feat: simplify models 
 
 ---
 
-### Task 3: 簡化 schemas.py
+### Task 3: Simplify schemas.py
 
 **Files:**
 - Modify: `src/cloud_mover/schemas.py`
 
-**Step 1: 重寫 schemas.py**
+**Step 1: Rewrite schemas.py**
 
 ```python
 """Pydantic schemas for API request/response."""
@@ -117,7 +117,7 @@ class UploadResponse(BaseModel):
 
     code: str = Field(min_length=6, max_length=6)
     expires_at: datetime
-    message: str = "上傳成功，請記住驗證碼"
+    message: str = "Upload successful, please remember the verification code"
 
 
 class ErrorResponse(BaseModel):
@@ -132,12 +132,12 @@ Run: `git add src/cloud_mover/schemas.py && git commit -m "feat: simplify schema
 
 ---
 
-### Task 4: 簡化 auth.py - 移除 OTP 相關
+### Task 4: Simplify auth.py - Remove OTP 
 
 **Files:**
 - Modify: `src/cloud_mover/services/auth.py`
 
-**Step 1: 重寫 auth.py**
+**Step 1: Rewrite auth.py**
 
 ```python
 """Authentication service for code generation."""
@@ -165,12 +165,12 @@ Run: `git add src/cloud_mover/services/auth.py && git commit -m "feat: simplify 
 
 ---
 
-### Task 5: 重寫 backup.py 服務
+### Task 5: Rewrite backup.py 
 
 **Files:**
 - Modify: `src/cloud_mover/services/backup.py`
 
-**Step 1: 重寫 backup.py**
+**Step 1: Rewrite backup.py**
 
 ```python
 """Backup service for file operations."""
@@ -233,12 +233,12 @@ Run: `git add src/cloud_mover/services/backup.py && git commit -m "feat: simplif
 
 ---
 
-### Task 6: 重寫 cleanup.py
+### Task 6: Rewrite cleanup.py
 
 **Files:**
 - Modify: `src/cloud_mover/services/cleanup.py`
 
-**Step 1: 重寫 cleanup.py**
+**Step 1: Rewrite cleanup.py**
 
 ```python
 """Cleanup service for expired backups."""
@@ -279,12 +279,12 @@ Run: `git add src/cloud_mover/services/cleanup.py && git commit -m "feat: simpli
 
 ---
 
-### Task 7: 重寫 API 路由
+### Task 7: Rewrite API 
 
 **Files:**
 - Modify: `src/cloud_mover/routers/api.py`
 
-**Step 1: 重寫 api.py**
+**Step 1: Rewrite api.py**
 
 ```python
 """API routes for Cloud-Mover."""
@@ -320,7 +320,7 @@ async def upload(
     if len(contents) > settings.max_file_size_bytes:
         raise HTTPException(
             status_code=400,
-            detail=f"檔案大小超過限制 ({settings.max_file_size_mb}MB)",
+            detail=f"File size exceeds limit ({settings.max_file_size_mb}MB)",
         )
 
     settings.upload_dir.mkdir(parents=True, exist_ok=True)
@@ -345,14 +345,14 @@ def download(
 ):
     """Download a backup file using verification code."""
     if not is_valid_code(code):
-        raise HTTPException(status_code=400, detail="驗證碼格式錯誤")
+        raise HTTPException(status_code=400, detail="Invalid verification code format")
 
     backup = get_backup_by_code(session, code)
     if not backup:
-        raise HTTPException(status_code=404, detail="驗證碼不存在或已過期")
+        raise HTTPException(status_code=404, detail="Verification code does not exist or has expired")
 
     if not os.path.exists(backup.file_path):
-        raise HTTPException(status_code=404, detail="備份檔案不存在")
+        raise HTTPException(status_code=404, detail="Backup file does not exist")
 
     return FileResponse(
         backup.file_path,
@@ -367,12 +367,12 @@ Run: `git add src/cloud_mover/routers/api.py && git commit -m "feat: simplify AP
 
 ---
 
-### Task 8: 重寫 main.py 的 API 文件
+### Task 8: Rewrite main.py  API 
 
 **Files:**
 - Modify: `src/cloud_mover/main.py`
 
-**Step 1: 重寫 main.py**
+**Step 1: Rewrite main.py**
 
 ```python
 """Cloud-Mover FastAPI application."""
@@ -395,136 +395,136 @@ def get_api_documentation() -> str:
     """Generate API documentation with current base_url."""
     return f"""# Cloud-Mover API
 
-Claude Code 搬家助手。在不同電腦間遷移 Claude Code 設定。
+Claude Code Migration Helper. Migrate Claude Code settings between different computers.
 
-服務網址：{settings.base_url}
+Service URL: {settings.base_url}
 
 ---
 
-## 上傳端（來源電腦）
+## Upload endpoint (Source computer)
 
-你正在幫助用戶將 Claude Code 設定搬到新電腦。
+You are helping the user move Claude Code settings to a new computer.
 
-### 步驟 1：準備安裝說明
+### Step 1: Prepare installation instructions
 
-建立 `INSTALL.md` 檔案，內容包含：
-- 此備份包含哪些設定（settings.json、keybindings.json、plugins 等）
-- 各檔案應該放置的位置
-- plugins 需要的額外安裝步驟（如有）
+Create `INSTALL.md` file, containing:
+- Which settings this backup contains (settings.json, keybindings.json, plugins, etc.)
+- Where each file should be placed
+- Extra installation steps needed for plugins (if any)
 
-範例 INSTALL.md：
+Example INSTALL.md:
 ```markdown
-# Claude Code 搬家安裝說明
+# Claude Code Migration Installation Instructions
 
-## 包含內容
-- settings.json - 用戶設定
-- keybindings.json - 快捷鍵設定
-- plugins/ - 已安裝的 plugins
+## Included content
+- settings.json - User settings
+- keybindings.json - Keybinding settings
+- plugins/ - Installed plugins
 
-## 安裝步驟
-1. 解壓縮到 ~/.claude/
-2. 重啟 Claude Code
+## Installation steps
+1. Extract to ~/.claude/
+2. Restart Claude Code
 
-## plugins 說明
-- my-plugin: 需要執行 `npm install` 安裝依賴
+## Plugins instructions
+- my-plugin: Need to run `npm install` install dependencies
 ```
 
-### 步驟 2：打包檔案
+### Step 2: Package files
 
-將以下內容打包成 zip（依實際存在的檔案）：
+Package the following into a zip (based on actual files present):
 - `~/.claude/settings.json`
 - `~/.claude/keybindings.json`
 - `~/.claude/plugins/`
-- `INSTALL.md`（你剛建立的）
+- `INSTALL.md`（You just created）
 
-**重要**：請用戶設定一個壓縮密碼保護檔案內容。
+**Important**：User settingsZip password。
 
-### 步驟 3：上傳
+### Step 3: Upload
 
 ```
 POST {settings.base_url}/upload
 Content-Type: multipart/form-data
-file: <zip 檔案>
+file: <zip file>
 ```
 
-回應：
+Response:
 ```json
 {{{{
   "code": "a7x9k2",
   "expires_at": "2026-02-04T12:00:00Z",
-  "message": "上傳成功，請記住驗證碼"
+  "message": "Upload successful, please remember the verification code"
 }}}}
 ```
 
-### 步驟 4：告知用戶
+### Step 4: Inform user
 
-請告訴用戶：
-- 驗證碼：`a7x9k2`（6 碼）
-- 壓縮密碼：用戶自己設定的
-- 有效期限：24 小時
+Please tell the user:
+- Verification code: `a7x9k2`（6 ）
+- Zip password: user self-set
+- Validity: 24 hours
 
-用戶需要在新電腦上提供這兩組資訊。
+User needs to provide these two pieces of info on the new computer.
 
 ---
 
-## 下載端（目標電腦）
+## Download endpoint (Target computer)
 
-你正在幫助用戶從舊電腦接收 Claude Code 設定。
+You are helping the user receive Claude Code settings from the old computer.
 
-### 步驟 1：取得資訊
+### Step 1: Get information
 
-向用戶索取：
-1. **驗證碼**（6 碼英數字）
-2. **壓縮密碼**（用戶在舊電腦設定的）
+Ask user for:
+1. **Verification code**（6 alphanumeric characters）
+2. **Zip password**（set by user on the old computer）
 
-### 步驟 2：下載
+### Step 2: Download
 
 ```
 GET {settings.base_url}/download/{{{{code}}}}
 ```
 
-回應：zip 檔案串流
+Response:zip file
 
-### 步驟 3：解壓縮
+### Step 3: Unzip
 
-使用用戶提供的壓縮密碼解壓縮檔案。
+Zip password。
 
-### 步驟 4：依照 INSTALL.md 安裝
+### Step 4: Install according to INSTALL.md
 
-讀取解壓後的 `INSTALL.md`，依照說明：
-1. 將檔案放到正確位置（通常是 `~/.claude/`）
-2. 執行必要的額外步驟（如 plugin 依賴安裝）
-3. 提示用戶重啟 Claude Code
+Read the extracted `INSTALL.md`, follow the instructions:
+1. Place files in the correct locations (usually `~/.claude/`）
+2. Execute necessary extra steps (like plugin dependency installation)
+3. Restart Claude Code
 
 ---
 
-## API 參考
+## API Reference
 
 ### POST /upload
 
-上傳備份檔案，取得驗證碼。
+，Verification code。
 
 **Request:** multipart/form-data
-- `file`: zip 檔案（最大 {settings.max_file_size_mb}MB）
+- `file`: zip file（Max {settings.max_file_size_mb}MB）
 
 **Response:**
 ```json
 {{{{
   "code": "a7x9k2",
   "expires_at": "2026-02-04T12:00:00Z",
-  "message": "上傳成功，請記住驗證碼"
+  "message": "Upload successful, please remember the verification code"
 }}}}
 ```
 
 ### GET /download/{{{{code}}}}
 
-使用驗證碼下載備份檔案。
+Verification code。
 
 **Response:** application/zip
 
-**錯誤：**
-- 400: 驗證碼格式錯誤
-- 404: 驗證碼不存在或已過期
+**Errors:**
+- 400: Invalid verification code format
+- 404: Verification code does not exist or has expired
 """.strip()
 
 
@@ -594,13 +594,13 @@ Run: `git add src/cloud_mover/main.py && git commit -m "feat: rewrite API docs f
 
 ---
 
-### Task 9: 重寫測試
+### Task 9: Rewrite
 
 **Files:**
 - Modify: `tests/test_auth.py`
 - Modify: `tests/test_api.py`
 
-**Step 1: 重寫 test_auth.py**
+**Step 1: Rewrite test_auth.py**
 
 ```python
 """Tests for auth service."""
@@ -645,7 +645,7 @@ def test_is_valid_code_invalid_chars():
     assert is_valid_code("abc-12") is False
 ```
 
-**Step 2: 重寫 test_api.py**
+**Step 2: Rewrite test_api.py**
 
 ```python
 """Integration tests for API endpoints."""
@@ -767,7 +767,7 @@ def test_download_nonexistent_code(client: TestClient):
     assert response.status_code == 404
 ```
 
-**Step 3: 執行測試**
+**Step 3: Run tests**
 
 Run: `uv run pytest -v`
 
@@ -777,40 +777,40 @@ Run: `git add tests/test_auth.py tests/test_api.py && git commit -m "test: rewri
 
 ---
 
-### Task 10: 更新 README.md 和 CLAUDE.md
+### Task 10: Update README.md  CLAUDE.md
 
 **Files:**
 - Modify: `README.md`
 - Modify: `CLAUDE.md`
 
-**Step 1: 重寫 README.md**
+**Step 1: Rewrite README.md**
 
 ```markdown
 # Cloud-Mover
 
-Claude Code 搬家助手 API 服務。
+Claude Code  API 。
 
-## 功能
+## Features
 
-- 上傳備份檔案，取得 6 碼驗證碼
-- 使用驗證碼下載備份檔案
-- 24 小時後自動刪除（檔案 + 記錄）
+- ， 6 Verification code
+- Verification code
+- Auto-delete after 24 hours (file + record)
 
-## 隱私保護
+## Privacy Protection
 
-- 伺服器不儲存壓縮密碼，只有用戶知道
-- 過期後完全刪除，不保留任何記錄
-- 驗證碼僅用於識別檔案，無法解密內容
+- Zip password，
+- ，
+- Verification code，
 
-## 安裝
+## 
 
 ```bash
 uv sync
 ```
 
-## 設定
+## 
 
-建立 `.env` 檔案：
+ `.env` ：
 
 ```env
 HOST=0.0.0.0
@@ -820,22 +820,22 @@ MAX_FILE_SIZE_MB=59
 EXPIRY_HOURS=24
 ```
 
-## 啟動
+## 
 
 ```bash
 uv run cloud-mover
 ```
 
-## API 端點
+## API 
 
-| 端點 | 方法 | 說明 |
+|  |  |  |
 |------|------|------|
-| `/` | GET | API 使用說明（給 Claude Code 閱讀） |
-| `/upload` | POST | 上傳備份，回傳驗證碼 |
-| `/download/{code}` | GET | 使用驗證碼下載備份 |
+| `/` | GET | API （ Claude Code ） |
+| `/upload` | POST | ，Verification code |
+| `/download/{code}` | GET | Verification code |
 ```
 
-**Step 2: 重寫 CLAUDE.md**
+**Step 2: Rewrite CLAUDE.md**
 
 ```markdown
 # CLAUDE.md
@@ -889,12 +889,12 @@ Run: `git add README.md CLAUDE.md && git commit -m "docs: update README and CLAU
 
 ---
 
-### Task 11: 建立 .env.example
+### Task 11:  .env.example
 
 **Files:**
 - Create: `.env.example`
 
-**Step 1: 建立 .env.example**
+**Step 1:  .env.example**
 
 ```env
 HOST=0.0.0.0
@@ -910,13 +910,13 @@ Run: `git add .env.example && git commit -m "chore: add .env.example"`
 
 ---
 
-### Task 12: 清理並驗證
+### Task 12: 
 
-**Step 1: 刪除舊資料庫**
+**Step 1: **
 
 Run: `rm -rf data/ uploads/`
 
-**Step 2: 執行完整測試**
+**Step 2: **
 
 Run: `uv run pytest -v`
 

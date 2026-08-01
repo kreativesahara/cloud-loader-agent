@@ -1,6 +1,6 @@
 # Cloud-Loader
 
-[繁體中文](README.zh-TW.md) | English
+|English
 
 AI Agent Services - File Transfer, Template Sharing & Knowledge Tracking.
 
@@ -29,12 +29,6 @@ AI Agent Services - File Transfer, Template Sharing & Knowledge Tracking.
 ## Quick Start with Claude Code
 
 Tell Claude Code:
-
-```
-幫我用 loader.land 搬家
-```
-
-or
 
 ```
 Help me migrate using loader.land
