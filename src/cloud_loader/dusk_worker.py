@@ -220,6 +220,7 @@ async def run_dusk_pipeline():
                     command="uv",
                     args=["run", "--directory", "../dusk-mcp", "dusk-mcp"],
                     env={
+                        **{k: v for k, v in os.environ.items() if k not in ("VIRTUAL_ENV", "UV_ACTIVE")},
                         "DATA_DIR": str(settings.data_dir),
                         "TAVILY_API_KEY": os.environ.get("TAVILY_API_KEY", ""),
                         "X_API_KEY": os.environ.get("X_API_KEY", ""),
@@ -232,6 +233,9 @@ async def run_dusk_pipeline():
                 "codex": McpStdioServerConfig(
                     command="uv",
                     args=["run", "--directory", "../codex-mcp", "codex-mcp"],
+                    env={
+                        **{k: v for k, v in os.environ.items() if k not in ("VIRTUAL_ENV", "UV_ACTIVE")},
+                    }
                 ),
             },
         )

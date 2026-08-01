@@ -97,7 +97,7 @@ def list_snapshots(session: Session, concept_id: int, limit: int = 20, offset: i
 def run_concept_search(session: Session, concept: Concept) -> ConceptSnapshot:
     """
     Mock implementation of a search run.
-    In a real implementation, this would use Tavily API and OpenAI/Anthropic 
+    In a real implementation, this would use Tavily API and Anthropic 
     to fetch data and generate a knowledge graph.
     """
     # Create a mock graph based on keywords

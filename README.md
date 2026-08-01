@@ -22,7 +22,7 @@ AI Agent Services - File Transfer, Template Sharing & Knowledge Tracking.
 
 ### Concept Tracking (NEW)
 - Monitor topics with automatic web search
-- Build knowledge graphs with AI (Claude/OpenAI)
+- Build knowledge graphs with AI (Claude)
 - Generate content drafts (video scripts, tweets, articles)
 - API key authentication for personal tracking
 
@@ -101,7 +101,7 @@ TEMPLATE_EXPIRY_DAYS=7
 
 # For Concept Tracking (optional)
 TAVILY_API_KEY=
-OPENAI_API_KEY=
+
 ANTHROPIC_API_KEY=
 ```
 
