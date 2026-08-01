@@ -685,6 +685,14 @@ def human_page(request: Request):
     )
 
 
+@app.get("/help")
+def help_page(request: Request):
+    """Documentation and FAQ page."""
+    return templates.TemplateResponse(
+        request, "help.html", {"base_url": settings.base_url}
+    )
+
+
 @app.get("/robots.txt")
 def robots_txt(request: Request):
     """Serve robots.txt for search engine crawlers."""

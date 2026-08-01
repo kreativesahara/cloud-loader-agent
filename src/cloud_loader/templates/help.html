@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Documentation & Help - Cloud-Loader{% endblock %}
+
+{% block content %}
+<header class="bg-white border-b px-8 py-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900">Documentation & Help</h1>
+        <p class="text-gray-500 mt-2">Learn how to use Cloud-Loader and find answers to common questions.</p>
+    </div>
+</header>
+
+<main class="flex-1 overflow-y-auto p-8">
+    <div class="max-w-4xl mx-auto space-y-12">
+        
+        <!-- Documentation Section -->
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="ph ph-book text-brand mr-3"></i> Quick Start Guide
+            </h2>
+            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div class="p-6 space-y-6 text-gray-600 leading-relaxed">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">What is Cloud-Loader?</h3>
+                        <p>Cloud-Loader is a utility service for AI assistants like Claude Code, OpenClaw, and Codex. It helps you seamlessly migrate configurations between environments, and acts as a storage hub for shared markdown files, skills, and prompts.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Installing the Skill</h3>
+                        <p class="mb-2">To get started easily from your terminal, we recommend installing the Cloud-Loader skill directly into your AI assistant. Run the following command:</p>
+                        <div class="bg-gray-50 rounded-lg p-4 font-mono text-sm border">
+                            curl -s {{ base_url }}/skills/loader-land-skill -o loader-land.md
+                        </div>
+                        <p class="mt-2">Place the file in your assistant's commands or skills folder (e.g., <code class="bg-gray-100 px-1 py-0.5 rounded text-sm">~/.claude/commands/</code>).</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">MD Storage vs. Migration</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>MD Storage:</strong> Ideal for storing markdown documents publicly and permanently. Perfect for sharing prompts or code templates.</li>
+                            <li><strong>Migration:</strong> For packing entire agent configurations (including JSON settings and plugins) into a secure, password-protected ZIP archive that expires after a short period.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="ph ph-question text-brand mr-3"></i> Frequently Asked Questions
+            </h2>
+            <div class="space-y-4">
+                
+                <details class="group bg-white rounded-xl shadow-sm border [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer">
+                        <h3 class="font-medium text-gray-900">Are my migration backups secure?</h3>
+                        <span class="transition duration-300 group-open:-rotate-180">
+                            <i class="ph ph-caret-down text-gray-500"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-600">
+                        <p>Yes. Your backups are packaged into a password-protected ZIP archive directly on your local machine before being uploaded. The server never knows your password and cannot inspect the contents. Furthermore, backup files are automatically deleted after a specified expiry time (default 24 hours).</p>
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-xl shadow-sm border [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer">
+                        <h3 class="font-medium text-gray-900">Are MD Storage files private?</h3>
+                        <span class="transition duration-300 group-open:-rotate-180">
+                            <i class="ph ph-caret-down text-gray-500"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-600">
+                        <p>No. MD Storage is designed for <strong>public sharing</strong>. Anyone with the link or file code can view the content. Please do not store API keys, passwords, or sensitive personal information in MD Storage.</p>
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-xl shadow-sm border [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer">
+                        <h3 class="font-medium text-gray-900">Which AI Assistants are supported?</h3>
+                        <span class="transition duration-300 group-open:-rotate-180">
+                            <i class="ph ph-caret-down text-gray-500"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-600">
+                        <p>Cloud-Loader natively supports configuration migrations for Claude Code, OpenClaw (Moltbot), and Codex. However, it can back up any arbitrary configuration folder if you specify the path.</p>
+                    </div>
+                </details>
+
+                <details class="group bg-white rounded-xl shadow-sm border [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer">
+                        <h3 class="font-medium text-gray-900">How do I access the raw API?</h3>
+                        <span class="transition duration-300 group-open:-rotate-180">
+                            <i class="ph ph-caret-down text-gray-500"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-600">
+                        <p>If you're accessing the service from an AI agent via the terminal (like `curl`), the server will automatically detect your user-agent and return the raw Markdown API documentation.</p>
+                    </div>
+                </details>
+
+            </div>
+        </section>
+
+        <!-- Help & Support -->
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="ph ph-headset text-brand mr-3"></i> Need more help?
+            </h2>
+            <div class="bg-indigo-50 rounded-xl border border-indigo-100 p-6 flex items-start">
+                <div class="p-3 bg-white rounded-lg shadow-sm mr-4">
+                    <i class="ph ph-github-logo text-3xl text-gray-800"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-1">Open Source Community</h3>
+                    <p class="text-gray-600 mb-4">Cloud-Loader is open-source. If you found a bug or have a feature request, please open an issue on our GitHub repository.</p>
+                    <a href="https://github.com/wcAmon/cloud-loader" target="_blank" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        View on GitHub <i class="ph ph-arrow-up-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+{% endblock %}
