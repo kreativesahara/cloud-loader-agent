@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud-Loader | AI Assistant Services Platform</title>
-    <meta name="description" content="Migrate settings, store MD files, and track topics with Loader Tracker. Supports Claude Code, OpenClaw, Codex, and more.">
+{% extends "base.html" %}
+
+{% block title %}Cloud-Loader | AI Assistant Services Platform{% endblock %}
+
+{% block extra_head %}
     <meta name="keywords" content="AI, Claude Code, OpenClaw, Codex, migration, MD storage, Loader Tracker, topic tracking">
     <meta name="author" content="Cloud-Loader">
 
@@ -23,9 +21,6 @@
     <!-- Canonical -->
     <link rel="canonical" href="{{ base_url }}/human">
 
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
-
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -38,25 +33,12 @@
         "operatingSystem": "Any"
     }
     </script>
+{% endblock %}
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand': '#6366f1',
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-gray-50 text-gray-900 min-h-screen">
+{% block content %}
     <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-4xl mx-auto px-4 py-6">
+    <header class="bg-white shadow-sm w-full sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-6 w-full">
             <h1 class="text-3xl font-bold text-brand">☁️ Cloud-Loader</h1>
             <p class="text-gray-600 mt-1">AI Assistant Services Platform</p>
         </div>
@@ -245,5 +227,4 @@
             <p>© 2024 Cloud-Loader. MIT License.</p>
         </div>
     </footer>
-</body>
-</html>
+{% endblock %}

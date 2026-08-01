@@ -11,6 +11,7 @@ import uvicorn
 from fastapi import Depends, FastAPI, Form, Request
 from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, select
 
 from cloud_loader.config import settings
@@ -631,6 +632,11 @@ app = FastAPI(
 # Setup Jinja2 templates
 templates_dir = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(templates_dir))
+
+# Setup Static files
+static_dir = Path(__file__).parent / "static"
+static_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 app.include_router(api.router)
 app.include_router(auth.router)

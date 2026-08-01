@@ -54,56 +54,109 @@ def get_yesterday_entry() -> str | None:
     return None
 
 
-def summarize_with_gpt(yesterday_content: str) -> dict:
-    """Use GPT-4.1 to summarize yesterday's brainstorm and generate search queries.
+# def summarize_with_gpt(yesterday_content: str) -> dict:
+#     """Use GPT-4.1 to summarize yesterday's brainstorm and generate search queries.
+# 
+#     Returns:
+#         {
+#             "summary": "昨日策略摘要...",
+#             "queries": ["search query 1", "search query 2", "search query 3"]
+#         }
+#     """
+#     from openai import OpenAI
+# 
+#     client = OpenAI(api_key=settings.openai_api_key)
+#     print("[Worker] Calling GPT-4.1 for summary + search queries...")
+# 
+#     response = client.chat.completions.create(
+#         model="gpt-4.1",
+#         messages=[
+#             {
+#                 "role": "system",
+#                 "content": (
+#                     "You are a research assistant. You will receive yesterday's strategy analysis regarding a 'Website serving AI agents'.\n"
+#                     "Please output JSON, including:\n"
+#                     "1. summary: 3-5 sentences in English summarizing yesterday's core insights and key strategic directions.\n"
+#                     "2. queries: 3 English search queries to investigate directions that should be explored deeper today. "
+#                     "The search queries should be specific, timely, and target points mentioned in yesterday's strategy that need more data.\n\n"
+#                     "Output ONLY JSON, no other text."
+#                 ),
+#             },
+#             {
+#                 "role": "user",
+#                 "content": yesterday_content,
+#             },
+#         ],
+#         response_format={"type": "json_object"},
+#         max_tokens=1000,
+#     )
+# 
+#     text = response.choices[0].message.content
+#     try:
+#         result = json.loads(text)
+#         summary = result.get("summary", "")
+#         queries = result.get("queries", [])
+#         if not isinstance(queries, list):
+#             queries = []
+#         print(f"[Worker] GPT summary: {len(summary)} chars, {len(queries)} queries")
+#         for q in queries:
+#             print(f"[Worker]   → {q}")
+#         return {"summary": summary, "queries": queries[:5]}
+#     except json.JSONDecodeError:
+#         print(f"[Worker] GPT output not valid JSON: {text[:200]}")
+#         return {"summary": text[:500], "queries": []}
+
+def summarize_with_claude(yesterday_content: str) -> dict:
+    """Use Claude to summarize yesterday's brainstorm and generate search queries.
 
     Returns:
         {
-            "summary": "昨日策略摘要...",
+            "summary": "...",
             "queries": ["search query 1", "search query 2", "search query 3"]
         }
     """
-    from openai import OpenAI
+    import anthropic
 
-    client = OpenAI(api_key=settings.openai_api_key)
-    print("[Worker] Calling GPT-4.1 for summary + search queries...")
+    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    print("[Worker] Calling Claude for summary + search queries...")
 
-    response = client.chat.completions.create(
-        model="gpt-4.1",
+    # For JSON output, Claude works best when told to return ONLY JSON and when prefilled with {
+    message = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=1000,
+        system=(
+            "You are a research assistant. You will receive yesterday's strategy analysis regarding a 'Website serving AI agents'.\n"
+            "Please output JSON, including:\n"
+            "1. summary: 3-5 sentences in English summarizing yesterday's core insights and key strategic directions.\n"
+            "2. queries: 3 English search queries to investigate directions that should be explored deeper today. "
+            "The search queries should be specific, timely, and target points mentioned in yesterday's strategy that need more data.\n\n"
+            "Output ONLY JSON, no other text."
+        ),
         messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are a research assistant. You will receive yesterday's strategy analysis regarding a 'Website serving AI agents'.\n"
-                    "Please output JSON, including:\n"
-                    "1. summary: 3-5 sentences in English summarizing yesterday's core insights and key strategic directions.\n"
-                    "2. queries: 3 English search queries to investigate directions that should be explored deeper today. "
-                    "The search queries should be specific, timely, and target points mentioned in yesterday's strategy that need more data.\n\n"
-                    "Output ONLY JSON, no other text."
-                ),
-            },
             {
                 "role": "user",
                 "content": yesterday_content,
             },
+            {
+                "role": "assistant",
+                "content": "{"
+            }
         ],
-        response_format={"type": "json_object"},
-        max_tokens=1000,
     )
 
-    text = response.choices[0].message.content
+    text = "{" + message.content[0].text
     try:
         result = json.loads(text)
         summary = result.get("summary", "")
         queries = result.get("queries", [])
         if not isinstance(queries, list):
             queries = []
-        print(f"[Worker] GPT summary: {len(summary)} chars, {len(queries)} queries")
+        print(f"[Worker] Claude summary: {len(summary)} chars, {len(queries)} queries")
         for q in queries:
             print(f"[Worker]   → {q}")
         return {"summary": summary, "queries": queries[:5]}
     except json.JSONDecodeError:
-        print(f"[Worker] GPT output not valid JSON: {text[:200]}")
+        print(f"[Worker] Claude output not valid JSON: {text[:200]}")
         return {"summary": text[:500], "queries": []}
 
 
@@ -286,15 +339,19 @@ def main():
     print("[Worker] Step 1: Reading yesterday's brainstorm...")
     yesterday_content = get_yesterday_entry()
 
-    # Step 2: GPT-4.1 summarizes + generates search queries
+    # Step 2: Claude summarizes + generates search queries
     yesterday_summary = None
     search_queries = []
 
     if yesterday_content:
-        print("[Worker] Step 2: GPT-4.1 summarizing + generating queries...")
-        gpt_result = summarize_with_gpt(yesterday_content)
-        yesterday_summary = gpt_result["summary"]
-        search_queries = gpt_result["queries"]
+        # print("[Worker] Step 2: GPT-4.1 summarizing + generating queries...")
+        # gpt_result = summarize_with_gpt(yesterday_content)
+        # yesterday_summary = gpt_result["summary"]
+        # search_queries = gpt_result["queries"]
+        print("[Worker] Step 2: Claude summarizing + generating queries...")
+        claude_result = summarize_with_claude(yesterday_content)
+        yesterday_summary = claude_result["summary"]
+        search_queries = claude_result["queries"]
     else:
         print("[Worker] No yesterday entry, using default queries")
         search_queries = [

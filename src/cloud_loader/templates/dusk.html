@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dusk | Agent Dashboard</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌅</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
+{% extends "base.html" %}
+
+{% block title %}Dusk | Agent Dashboard{% endblock %}
+
+{% block content_bg %}bg-[#121010] text-gray-200{% endblock %}
+
+{% block extra_head %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
     <script>
@@ -16,13 +15,13 @@
                         'dusk': '#1a1510',
                         'accent': '#f59e0b',
                         'accent-light': '#fde68a',
+                        'brand': '#6366f1',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background: #121010; }
         .run-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .run-content.open { max-height: 5000px; transition: max-height 0.5s ease-in; }
         .toggle-arrow { transition: transform 0.2s; display: inline-block; }
@@ -53,9 +52,9 @@
         }
         .agent-active { animation: pulse-glow 2s ease-in-out infinite; }
     </style>
-</head>
-<body class="text-gray-200 min-h-screen">
+{% endblock %}
 
+{% block content %}
     <!-- Header -->
     <header class="border-b border-amber-900/50">
         <div class="max-w-4xl mx-auto px-4 py-6">
@@ -318,8 +317,9 @@
         <div class="max-w-4xl mx-auto px-4 py-6 text-center text-gray-600 text-sm">
             Dusk v0.1 &middot; loader.land Agent
         </div>
-    </footer>
+{% endblock %}
 
+{% block scripts %}
     <script>
         document.querySelectorAll('script[type="text/markdown"]').forEach(function(el) {
             var id = el.id.replace('raw-', '');
@@ -343,5 +343,4 @@
         setTimeout(function() { location.reload(); }, 30000);
         {% endif %}
     </script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cloud-Loader{% endblock %}</title>
+    <!-- Common Head Content -->
+    <meta name="description" content="AI Assistant Services Platform">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+    
+    <!-- Phosphor Icons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand': '#6366f1',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Extra Head block for specific pages -->
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-900 h-screen flex overflow-hidden">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="bg-white border-r shadow-sm flex flex-col transition-all duration-300 w-64 h-full z-20">
+        <div class="p-4 border-b flex items-center justify-between h-16">
+            <h1 id="brand-text" class="text-xl font-bold text-brand whitespace-nowrap overflow-hidden transition-all duration-300">☁️ Cloud-Loader</h1>
+            <button id="toggle-sidebar" class="text-gray-500 hover:text-brand focus:outline-none flex-shrink-0" title="Toggle Sidebar">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="/human" class="flex items-center px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-brand transition-colors" title="Home">
+                        <i class="ph ph-house text-xl flex-shrink-0"></i>
+                        <span class="ml-3 font-medium sidebar-text whitespace-nowrap transition-opacity duration-300">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hub" class="flex items-center px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-brand transition-colors" title="Agent Hub">
+                        <i class="ph ph-layout text-xl flex-shrink-0"></i>
+                        <span class="ml-3 font-medium sidebar-text whitespace-nowrap transition-opacity duration-300">Agent Hub</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/agent-brainstorm" class="flex items-center px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-brand transition-colors" title="Brainstorm">
+                        <i class="ph ph-lightbulb text-xl flex-shrink-0"></i>
+                        <span class="ml-3 font-medium sidebar-text whitespace-nowrap transition-opacity duration-300">Brainstorm</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/gallery" class="flex items-center px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-brand transition-colors" title="Gallery">
+                        <i class="ph ph-image text-xl flex-shrink-0"></i>
+                        <span class="ml-3 font-medium sidebar-text whitespace-nowrap transition-opacity duration-300">Gallery</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dusk" class="flex items-center px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-brand transition-colors" title="Dusk Dashboard">
+                        <i class="ph ph-moon-stars text-xl flex-shrink-0"></i>
+                        <span class="ml-3 font-medium sidebar-text whitespace-nowrap transition-opacity duration-300">Dusk Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div id="sidebar-footer" class="p-4 border-t text-sm text-gray-500 text-center sidebar-text whitespace-nowrap transition-opacity duration-300">
+            © 2026 Cloud-Loader
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto {% block content_bg %}bg-gray-50{% endblock %} relative w-full">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        const brandText = document.getElementById('brand-text');
+        const sidebarTexts = document.querySelectorAll('.sidebar-text');
+        const sidebarFooter = document.getElementById('sidebar-footer');
+        
+        let isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        
+        function updateSidebar() {
+            if (isCollapsed) {
+                sidebar.classList.replace('w-64', 'w-16');
+                brandText.classList.add('opacity-0', 'w-0');
+                sidebarTexts.forEach(el => {
+                    el.classList.add('opacity-0', 'w-0', 'hidden');
+                });
+                sidebarFooter.classList.add('hidden');
+            } else {
+                sidebar.classList.replace('w-16', 'w-64');
+                brandText.classList.remove('opacity-0', 'w-0');
+                sidebarTexts.forEach(el => {
+                    el.classList.remove('opacity-0', 'w-0', 'hidden');
+                });
+                sidebarFooter.classList.remove('hidden');
+            }
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+        
+        toggleBtn.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            updateSidebar();
+        });
+        
+        // Initial setup
+        updateSidebar();
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

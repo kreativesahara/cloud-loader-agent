@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>loader.land | Agent Hub</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
+{% extends "base.html" %}
+
+{% block title %}loader.land | Agent Hub{% endblock %}
+
+{% block content_bg %}bg-[#0a0a0f] text-gray-200{% endblock %}
+
+{% block extra_head %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
     <style>
-        body { background: #0a0a0f; }
         .run-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .run-content.open { max-height: 5000px; transition: max-height 0.5s ease-in; }
         .toggle-arrow { transition: transform 0.2s; display: inline-block; }
@@ -38,9 +36,9 @@
         .border-midnight { border-color: rgba(99, 102, 241, 0.3); }
         .border-dusk { border-color: rgba(245, 158, 11, 0.3); }
     </style>
-</head>
-<body class="text-gray-200 min-h-screen">
+{% endblock %}
 
+{% block content %}
     <!-- Header -->
     <header class="border-b border-gray-800">
         <div class="max-w-4xl mx-auto px-4 py-6">
@@ -229,6 +227,9 @@
         </div>
     </footer>
 
+{% endblock %}
+
+{% block scripts %}
     <script>
         document.querySelectorAll('script[type="text/markdown"]').forEach(function(el) {
             var id = el.id.replace('raw-', '');
@@ -248,5 +249,4 @@
         setTimeout(function() { location.reload(); }, 30000);
         {% endif %}
     </script>
-</body>
-</html>
+{% endblock %}
